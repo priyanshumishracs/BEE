@@ -4,7 +4,7 @@ pipeline {
     parameters {
         choice(
             name: 'ENVIRONMENT',
-            choices: ['production', 'uat', 'dr'],
+            choices: ['production', 'dr'],
             description: 'Select the environment to deploy'
         )
         choice(
@@ -60,10 +60,10 @@ pipeline {
         stage('Terraform Init') {
             steps {
                 withCredentials([
-                    string(credentialsId: 'ARM_CLIENT_ID', variable: 'ARM_CLIENT_ID'),
-                    string(credentialsId: 'ARM_CLIENT_SECRET', variable: 'ARM_CLIENT_SECRET'),
-                    string(credentialsId: 'ARM_TENANT_ID', variable: 'ARM_TENANT_ID'),
-                    string(credentialsId: 'ARM_SUBSCRIPTION_ID', variable: 'ARM_SUBSCRIPTION_ID')
+                    string(credentialsId: 'ARM_CLIENT_ID_pm', variable: 'ARM_CLIENT_ID_pm'),
+                    string(credentialsId: 'ARM_CLIENT_SECRET_pm', variable: 'ARM_CLIENT_SECRET_pm'),
+                    string(credentialsId: 'ARM_TENANT_ID_pm', variable: 'ARM_TENANT_ID_pm'),
+                    string(credentialsId: 'ARM_SUBSCRIPTION_ID_pm', variable: 'ARM_SUBSCRIPTION_ID_pm')
                 ]) {
                     sh '''
                         export PATH="$HOME/.local/bin:$PATH"
@@ -77,10 +77,10 @@ pipeline {
        stage('Terraform Validate') {
     	steps {
         withCredentials([
-            string(credentialsId: 'ARM_CLIENT_ID', variable: 'ARM_CLIENT_ID'),
-            string(credentialsId: 'ARM_CLIENT_SECRET', variable: 'ARM_CLIENT_SECRET'),
-            string(credentialsId: 'ARM_TENANT_ID', variable: 'ARM_TENANT_ID'),
-            string(credentialsId: 'ARM_SUBSCRIPTION_ID', variable: 'ARM_SUBSCRIPTION_ID')
+            string(credentialsId: 'ARM_CLIENT_ID_pm', variable: 'ARM_CLIENT_ID_pm'),
+            string(credentialsId: 'ARM_CLIENT_SECRET_pm', variable: 'ARM_CLIENT_SECRET_pm'),
+            string(credentialsId: 'ARM_TENANT_ID_pm', variable: 'ARM_TENANT_ID_pm'),
+            string(credentialsId: 'ARM_SUBSCRIPTION_ID_pm', variable: 'ARM_SUBSCRIPTION_ID_pm')
         ]) {
             sh '''
                 export PATH="$HOME/.local/bin:$PATH"
@@ -102,10 +102,10 @@ pipeline {
             }
             steps {
                 withCredentials([
-                    string(credentialsId: 'ARM_CLIENT_ID', variable: 'ARM_CLIENT_ID'),
-                    string(credentialsId: 'ARM_CLIENT_SECRET', variable: 'ARM_CLIENT_SECRET'),
-                    string(credentialsId: 'ARM_TENANT_ID', variable: 'ARM_TENANT_ID'),
-                    string(credentialsId: 'ARM_SUBSCRIPTION_ID', variable: 'ARM_SUBSCRIPTION_ID')
+                    string(credentialsId: 'ARM_CLIENT_ID_pm', variable: 'ARM_CLIENT_ID_pm'),
+                    string(credentialsId: 'ARM_CLIENT_SECRET_pm', variable: 'ARM_CLIENT_SECRET_pm'),
+                    string(credentialsId: 'ARM_TENANT_ID_pm', variable: 'ARM_TENANT_ID_pm'),
+                    string(credentialsId: 'ARM_SUBSCRIPTION_ID_pm', variable: 'ARM_SUBSCRIPTION_ID_pm')
                 ]) {
                     script {
                         sh """
@@ -129,10 +129,10 @@ pipeline {
                 script {
                     if (params.AUTO_APPROVE) {
                         withCredentials([
-                            string(credentialsId: 'ARM_CLIENT_ID', variable: 'ARM_CLIENT_ID'),
-                            string(credentialsId: 'ARM_CLIENT_SECRET', variable: 'ARM_CLIENT_SECRET'),
-                            string(credentialsId: 'ARM_TENANT_ID', variable: 'ARM_TENANT_ID'),
-                            string(credentialsId: 'ARM_SUBSCRIPTION_ID', variable: 'ARM_SUBSCRIPTION_ID')
+                            string(credentialsId: 'ARM_CLIENT_ID_pm', variable: 'ARM_CLIENT_ID_pm'),
+                            string(credentialsId: 'ARM_CLIENT_SECRET_pm', variable: 'ARM_CLIENT_SECRET_pm'),
+                            string(credentialsId: 'ARM_TENANT_ID_pm', variable: 'ARM_TENANT_ID_pm'),
+                            string(credentialsId: 'ARM_SUBSCRIPTION_ID_pm', variable: 'ARM_SUBSCRIPTION_ID_pm')
                         ]) {
                             sh """
                                 export PATH="\$HOME/.local/bin:\$PATH"
@@ -143,10 +143,10 @@ pipeline {
                     } else {
                         input message: "Approve Terraform Apply for ${params.ENVIRONMENT}?", ok: 'Apply'
                         withCredentials([
-                            string(credentialsId: 'ARM_CLIENT_ID', variable: 'ARM_CLIENT_ID'),
-                            string(credentialsId: 'ARM_CLIENT_SECRET', variable: 'ARM_CLIENT_SECRET'),
-                            string(credentialsId: 'ARM_TENANT_ID', variable: 'ARM_TENANT_ID'),
-                            string(credentialsId: 'ARM_SUBSCRIPTION_ID', variable: 'ARM_SUBSCRIPTION_ID')
+                            string(credentialsId: 'ARM_CLIENT_ID_pm', variable: 'ARM_CLIENT_ID_pm'),
+                            string(credentialsId: 'ARM_CLIENT_SECRET_pm', variable: 'ARM_CLIENT_SECRET_pm'),
+                            string(credentialsId: 'ARM_TENANT_ID_pm', variable: 'ARM_TENANT_ID_pm'),
+                            string(credentialsId: 'ARM_SUBSCRIPTION_ID_pm', variable: 'ARM_SUBSCRIPTION_ID_pm')
                         ]) {
                             sh """
                                 export PATH="\$HOME/.local/bin:\$PATH"
@@ -167,10 +167,10 @@ pipeline {
         script {
             input message: "Are you sure you want to destroy ${params.ENVIRONMENT} infrastructure?", ok: 'Destroy'
             withCredentials([
-                string(credentialsId: 'ARM_CLIENT_ID', variable: 'ARM_CLIENT_ID'),
-                string(credentialsId: 'ARM_CLIENT_SECRET', variable: 'ARM_CLIENT_SECRET'),
-                string(credentialsId: 'ARM_TENANT_ID', variable: 'ARM_TENANT_ID'),
-                string(credentialsId: 'ARM_SUBSCRIPTION_ID', variable: 'ARM_SUBSCRIPTION_ID')
+                string(credentialsId: 'ARM_CLIENT_ID_pm', variable: 'ARM_CLIENT_ID_pm'),
+                string(credentialsId: 'ARM_CLIENT_SECRET_pm', variable: 'ARM_CLIENT_SECRET_pm'),
+                string(credentialsId: 'ARM_TENANT_ID_pm', variable: 'ARM_TENANT_ID_pm'),
+                string(credentialsId: 'ARM_SUBSCRIPTION_ID_pm', variable: 'ARM_SUBSCRIPTION_ID_pm')
             ]) {
                 sh """
                     export PATH="\$HOME/.local/bin:\$PATH"
@@ -193,10 +193,10 @@ pipeline {
             }
             steps {
                 withCredentials([
-                    string(credentialsId: 'ARM_CLIENT_ID', variable: 'ARM_CLIENT_ID'),
-                    string(credentialsId: 'ARM_CLIENT_SECRET', variable: 'ARM_CLIENT_SECRET'),
-                    string(credentialsId: 'ARM_TENANT_ID', variable: 'ARM_TENANT_ID'),
-                    string(credentialsId: 'ARM_SUBSCRIPTION_ID', variable: 'ARM_SUBSCRIPTION_ID')
+                    string(credentialsId: 'ARM_CLIENT_ID_pm', variable: 'ARM_CLIENT_ID_pm'),
+                    string(credentialsId: 'ARM_CLIENT_SECRET_pm', variable: 'ARM_CLIENT_SECRET_pm'),
+                    string(credentialsId: 'ARM_TENANT_ID_pm', variable: 'ARM_TENANT_ID_pm'),
+                    string(credentialsId: 'ARM_SUBSCRIPTION_ID_pm', variable: 'ARM_SUBSCRIPTION_ID_pm')
                 ]) {
                     sh '''
                         export PATH="$HOME/.local/bin:$PATH"
