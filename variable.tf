@@ -82,11 +82,3 @@ variable "subscription_id" {
   type    = string
   default = ""
 }
-
-variable "environment" {
-  type = string
-  validation {
-    condition     = contains(["production","dr"], var.environment)
-    error_message = "Environment must be production or dr."
-  }
-}
