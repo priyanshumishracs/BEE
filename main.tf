@@ -199,3 +199,31 @@ resource "azurerm_linux_virtual_machine" "vm" {
     version   = "latest"
   }
 }
+
+output "resource_summary" {
+  value = {
+    resource_group = azurerm_resource_group.main.name
+    location       = var.location
+    environment    = var.environment
+    vnet_cidr      = local.current_env.vnet_cidr
+    app_subnet     = local.current_env.app_subnet
+    db_subnet      = local.current_env.db_subnet
+    vm_count       = length(local.current_env.vms)
+    vm_size        = local.vm_size
+    os_disk_size   = "${local.os_disk_size_gb}GB"
+    admin_password = random_password.vm_password.result
+  }
+  sensitive = true
+}
+
+output "vm_public_ips" {
+  value = {
+    for k, v in azurerm_public_ip.vm : k => v.ip_address
+  }
+}
+
+output "vm_private_ips" {
+  value = {
+    for k, v in azurerm_network_interface.vm : k => v.private_ip_address
+  }
+}
