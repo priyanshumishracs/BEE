@@ -12,7 +12,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git url: 'https://github.com/your-repo/terraform.git', branch: 'main'
+                git url: 'https://github.com/priyanshumishracs/BEE.git', branch: 'main'
             }
         }
 
