@@ -34,29 +34,45 @@ pipeline {
             }
         }
         
-        stage('Setup Terraform') {
-            steps {
-                script {
-                    sh '''
-                        if ! command -v terraform &> /dev/null; then
-                            echo "Installing Terraform..."
-                            wget https://releases.hashicorp.com/terraform/1.5.7/terraform_1.5.7_linux_amd64.zip
-                            unzip terraform_1.5.7_linux_amd64.zip
-                            chmod +x terraform
-                            mkdir -p ~/.local/bin
-                            mv terraform ~/.local/bin/
-                            rm terraform_1.5.7_linux_amd64.zip
-                            echo "Terraform installed successfully to ~/.local/bin/"
-                        else
-                            echo "Terraform is already installed"
-                        fi
-                        export PATH="$HOME/.local/bin:$PATH"
-                        terraform version
-                    '''
+stage('Setup Terraform') {
+    steps {
+        script {
+            sh '''
+                REQUIRED_VERSION="1.5.7"
+                
+                # Function to install Terraform
+                install_terraform() {
+                    echo "Installing Terraform ${REQUIRED_VERSION}..."
+                    wget https://releases.hashicorp.com/terraform/${REQUIRED_VERSION}/terraform_${REQUIRED_VERSION}_linux_amd64.zip
+                    unzip terraform_${REQUIRED_VERSION}_linux_amd64.zip
+                    chmod +x terraform
+                    mkdir -p ~/.local/bin
+                    mv terraform ~/.local/bin/
+                    rm terraform_${REQUIRED_VERSION}_linux_amd64.zip
+                    echo "Terraform ${REQUIRED_VERSION} installed successfully to ~/.local/bin/"
                 }
-            }
+
+                # Check if Terraform is installed
+                if ! command -v terraform &> /dev/null; then
+                    install_terraform
+                else
+                    INSTALLED_VERSION=$(terraform version -json | jq -r '.terraform_version')
+                    echo "Installed Terraform version: $INSTALLED_VERSION"
+                    if [ "$INSTALLED_VERSION" != "$REQUIRED_VERSION" ]; then
+                        echo "Updating Terraform to ${REQUIRED_VERSION}..."
+                        install_terraform
+                    else
+                        echo "Terraform is up-to-date."
+                    fi
+                fi
+
+                export PATH="$HOME/.local/bin:$PATH"
+                terraform version
+            '''
         }
-        
+    }
+}
+
         stage('Terraform Init') {
             steps {
                 withCredentials([
