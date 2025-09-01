@@ -14,8 +14,6 @@ terraform {
 
 provider "azurerm" {
   features {}
-  # Explicitly disable Azure CLI auth fallback
-  use_azure_cli_auth = false
   client_id       = var.client_id
   client_secret   = var.client_secret
   tenant_id       = var.tenant_id
